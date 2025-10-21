@@ -4,7 +4,7 @@ public class PlayerController : MonoBehaviour
 {
     [Header("Movement Settings")]
     public GameObject player;
-    public int direction = 0; // I was thinking 0 for original orientation, going in 90 degree clockwise increments (so 90 is 1, 180 is 2, etc)
+    public int direction = 5; // I was thinking 0 for original orientation, going in 90 degree clockwise increments (so 90 is 1, 180 is 2, etc)
     public float doubleJumpTimer = 0.8f;
     public float jumpForce = 7f;
     private bool doubleJumped = false;
