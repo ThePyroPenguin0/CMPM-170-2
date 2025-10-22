@@ -29,22 +29,22 @@ public class GravityController : MonoBehaviour
         {
             case 0:
                 gravityDirection = Vector2.down;
-                Debug.Log("Up should be up. GravDirection: (should be 0): " + gravDirection);
+                // Debug.Log("Up should be up. GravDirection: (should be 0): " + gravDirection);
                 break;
             case 1:
                 gravityDirection = Vector2.right;
-                Debug.Log("Up should be right. GravDirection (should be 1): " + gravDirection);
+                // Debug.Log("Up should be right. GravDirection (should be 1): " + gravDirection);
                 break;
             case 2:
                 gravityDirection = Vector2.up;
-                Debug.Log("Up should be down. GravDirection (should be 2): " + gravDirection);
+                // Debug.Log("Up should be down. GravDirection (should be 2): " + gravDirection);
                 break;
             case 3:
                 gravityDirection = Vector2.left;
-                Debug.Log("Up should be left. GravDirection (should be 3): " + gravDirection);
+                // Debug.Log("Up should be left. GravDirection (should be 3): " + gravDirection);
                 break;
             default:
-                Debug.LogError("Gravity direction out of bounds");
+                // Debug.LogError("Gravity direction out of bounds");
                 break;
         }
     }

@@ -54,13 +54,13 @@ public class GravityRotator : MonoBehaviour
 
                     rollInterval = 5f;
                     rollTimer = rollInterval;
-                    Debug.Log($"Rolled a {roll}, time for a {rotationAmount} degree rotation! :)");
+                    // Debug.Log($"Rolled a {roll}, time for a {rotationAmount} degree rotation! :)");
                 }
                 else
                 {
                     rollInterval = Mathf.Max(minInterval, rollInterval - 1f);
                     rollTimer = rollInterval;
-                    Debug.Log($"Rolled a {roll}, you survive this time. New interval: {rollInterval} seconds. :(");
+                    // Debug.Log($"Rolled a {roll}, you survive this time. New interval: {rollInterval} seconds. :(");
                 }
             }
         }
@@ -71,19 +71,19 @@ public class GravityRotator : MonoBehaviour
         {
             case 0:
                 gravityController.gravDirection = 0;
-                Debug.Log("Gravity direction set to 0 (0 degrees)");
+                // Debug.Log("Gravity direction set to 0 (0 degrees)");
                 break;
             case 90:
                 gravityController.gravDirection = 1;
-                Debug.Log("Gravity direction set to 1 (90 degrees)");
+                // Debug.Log("Gravity direction set to 1 (90 degrees)");
                 break;
             case 180:
                 gravityController.gravDirection = 2;
-                Debug.Log("Gravity direction set to 2 (180 degrees)");
+                // Debug.Log("Gravity direction set to 2 (180 degrees)");
                 break;
             case 270:
                 gravityController.gravDirection = 3;
-                Debug.Log("Gravity direction set to 3 (270 degrees)");
+                // Debug.Log("Gravity direction set to 3 (270 degrees)");
                 break;
         }
         gravityController.RotateGravity();

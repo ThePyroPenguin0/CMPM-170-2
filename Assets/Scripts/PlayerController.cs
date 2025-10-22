@@ -24,7 +24,7 @@ public class PlayerController : MonoBehaviour
     public Camera mainCamera;
 
     [Header("Teleport Settings")]
-    public Vector2 teleportPosition = new Vector2(-7f, 2f);
+    public Vector2 teleportPosition = new Vector2(-10f, 4f);
 
     [Header("Jump Bar Settings")]
     public ResourceBar jumpBar;
@@ -240,9 +240,10 @@ public class PlayerController : MonoBehaviour
 
     public void checkForDirectionChange()
     {
-        if (Input.GetKeyDown(KeyCode.R))
+        if(direction != oldDirection)
         {
-            direction = (direction + 1) % 4;
+            oldDirection = direction;
+            directionUpdate();
         }
     }
 
@@ -271,10 +272,10 @@ public class PlayerController : MonoBehaviour
         if (teleportPosition != null)
         {
             rb.linearVelocity = Vector2.zero;
-            transform.position = teleportPosition;
             gravityRotator.RotateGravity(0);
             direction = 0;
             directionUpdate();
+            transform.position = teleportPosition;
         }
     }
 
