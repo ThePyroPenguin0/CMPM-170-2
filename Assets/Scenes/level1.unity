@@ -1447,6 +1447,7 @@ GameObject:
   m_Component:
   - component: {fileID: 673300806}
   - component: {fileID: 673300807}
+  - component: {fileID: 673300808}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -1484,11 +1485,47 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c985d65dce765b845860bc32f3298975, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
-  player: {fileID: 0}
+  player: {fileID: 673300805}
   direction: 0
+  oldDirection: 0
   doubleJumpTimer: 0.8
   jumpForce: 7
-  moveSpeed: 5
+  moveSpeed: 10
+  acceleration: 10
+  maxSpeed: 8
+  friction: 0.9
+  selectedControlScheme: 0
+  upKey: 119
+  downKey: 115
+  leftKey: 97
+  rightKey: 100
+--- !u!50 &673300808
+Rigidbody2D:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 673300805}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 1
+  m_SleepingMode: 0
+  m_CollisionDetection: 1
+  m_Constraints: 0
 --- !u!1001 &694256194
 PrefabInstance:
   m_ObjectHideFlags: 0
