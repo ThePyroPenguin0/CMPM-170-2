@@ -7,17 +7,37 @@ public class PlayerController : MonoBehaviour
     public GameObject player;
     public int direction = 0;
     public int oldDirection = 0;
-    public float doubleJumpTimer = 0.8f;
-    public float jumpForce = 7f;
-    private bool doubleJumped = false;
-    public float moveSpeed = 5f;
+    public float doubleJumpTimer = 0.5f;
+    // public float upAccel = 0.8f;
+    public float downAccel = 3f;
+    public float leftAccel = 5f;
+    public float rightAccel = 5f;
+    public bool onGround = true;
+    public bool doubleJumped = false;
 
     [Header("Physics Settings")]
     public float acceleration = 10f;
     public float maxSpeed = 8f;
     public float friction = 0.9f;
 
-    // [Header("Player Options")]
+    [Header("Player Options")]
+    public Camera mainCamera;
+
+    [Header("Teleport Settings")]
+    public Vector2 teleportPosition = new Vector2(-7f, 2f);
+
+    [Header("Jump Bar Settings")]
+    public ResourceBar jumpBar;
+    public int maxJumpResource = 100;
+    public float jumpRechargeRate = 83f;
+    private int currentJumpResource;
+    private bool canDoubleJump = false;
+
+    [Header("Managerial")]
+    public UIManager uiManager;
+    public GravityController gravityController;
+    public GravityRotator gravityRotator;
+
     public enum ControlScheme
     {
         WASD = 0,
@@ -43,15 +63,12 @@ public class PlayerController : MonoBehaviour
     private Vector2 movement;
     private Rigidbody2D rb;
 
+    private Vector3 cameraVelocity = Vector3.zero;
+    public float cameraSmoothTime = 0.2f;
+
     void Awake()
     {
-        // Get or add Rigidbody2D component
         rb = GetComponent<Rigidbody2D>();
-        if (rb == null)
-        {
-            rb = gameObject.AddComponent<Rigidbody2D>();
-        }
-
         rb.gravityScale = 0f;
         rb.freezeRotation = true;
         switch (selectedControlScheme)
@@ -97,25 +114,30 @@ public class PlayerController : MonoBehaviour
         originalDownKey = downKey;
         originalLeftKey = leftKey;
         originalRightKey = rightKey;
+        currentJumpResource = maxJumpResource;
+        jumpBar.setMaxResource(maxJumpResource);
+        jumpBar.setResource(currentJumpResource);
     }
 
     void FixedUpdate()
     {
-        if (oldDirection != direction)
-        {
-            directionUpdate();
-            oldDirection = direction;
-        }
         movement = GetMappedInput();
         checkForDirectionChange();
-        ApplyPhysicsMovement();
+        ApplyPhysicsMovement(movement);
+        FillJumpBar();
     }
 
-    private void ApplyPhysicsMovement()
+    void LateUpdate()
     {
-        if (movement.magnitude > 0)
+        Vector3 targetPosition = transform.position + new Vector3(0, 0, -3);
+        mainCamera.transform.position = Vector3.SmoothDamp(mainCamera.transform.position, targetPosition, ref cameraVelocity, cameraSmoothTime);
+    }
+
+    private void ApplyPhysicsMovement(Vector2 rawInput)
+    {
+        if (rawInput.magnitude > 0)
         {
-            Vector2 force = movement.normalized * acceleration;
+            Vector2 force = rawInput.normalized * acceleration;
             rb.AddForce(force, ForceMode2D.Force);
 
             if (rb.linearVelocity.magnitude > maxSpeed)
@@ -138,11 +160,29 @@ public class PlayerController : MonoBehaviour
     {
         Vector2 input = Vector2.zero;
 
-        if (Input.GetKey(upKey)) input.y += 1f;
-        if (Input.GetKey(downKey)) input.y -= 1f;
-        if (Input.GetKey(leftKey)) input.x -= 1f;
-        if (Input.GetKey(rightKey)) input.x += 1f;
-        Debug.Log($"Raw Input: {input}");
+        if (Input.GetKey(upKey))
+        {
+            if (onGround)
+            {
+                rb.AddForce(-gravityController.gravityDirection.normalized * 20, ForceMode2D.Impulse);
+                canDoubleJump = false;
+                onGround = false;
+                Invoke("EnableDoubleJump", doubleJumpTimer);
+            }
+            else if (!onGround && !doubleJumped && canDoubleJump && currentJumpResource >= 100)
+            {
+                jumpBar.setResource(0);
+                currentJumpResource = 0;
+                rb.AddForce(-gravityController.gravityDirection.normalized * 15, ForceMode2D.Impulse);
+                doubleJumped = true;
+                canDoubleJump = false;
+                Invoke("ResetDoubleJump", doubleJumpTimer);
+            }
+        }
+        if (Input.GetKey(downKey)) input.y -= downAccel;
+        if (Input.GetKey(leftKey)) input.x -= leftAccel;
+        if (Input.GetKey(rightKey)) input.x += rightAccel;
+        // Debug.Log($"Raw Input: {input}");
 
         switch (direction)
         {
@@ -150,13 +190,13 @@ public class PlayerController : MonoBehaviour
                 input = new Vector2(input.x, input.y);
                 break;
             case 1: // +90 degrees
-                input = new Vector2(input.y, -input.x);
+                input = new Vector2(-input.y, input.x);
                 break;
             case 2: // +180 degrees
                 input = new Vector2(-input.x, -input.y);
                 break;
             case 3: // +270 degrees
-                input = new Vector2(-input.y, input.x);
+                input = new Vector2(input.y, -input.x);
                 break;
             default:
                 Debug.LogError($"How in the Kentucky Fried Fuck did you pass {direction} as the direction?");
@@ -186,6 +226,7 @@ public class PlayerController : MonoBehaviour
                 Debug.LogError($"How in the Kentucky Fried Fuck did you pass {direction} as the direction?");
                 break;
         }
+        Debug.Log($"New direction: {direction}, new control scheme: up is {upKey}, down is {downKey}, left is {leftKey}, right is {rightKey}");
     }
 
     public void RemapKeys(KeyCode newUp, KeyCode newDown, KeyCode newLeft, KeyCode newRight)
@@ -194,7 +235,7 @@ public class PlayerController : MonoBehaviour
         downKey = newDown;
         leftKey = newLeft;
         rightKey = newRight;
-        Debug.Log($"Keys remapped: Up: {newUp}, Down: {newDown}, Left: {newLeft}, Right: {newRight}");
+        return;
     }
 
     public void checkForDirectionChange()
@@ -203,5 +244,59 @@ public class PlayerController : MonoBehaviour
         {
             direction = (direction + 1) % 4;
         }
+    }
+
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Spike"))
+        {
+            TeleportPlayer();
+            uiManager.ShowRandomText(false);
+        }
+
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Platform"))
+        {
+            onGround = true;
+        }
+
+        if (collision.gameObject.layer == LayerMask.NameToLayer("WinFlag"))
+        {
+            uiManager.ShowRandomText(true);
+            Invoke("TeleportPlayer", 5f);
+        }
+    }
+
+    private void TeleportPlayer()
+    {
+        if (teleportPosition != null)
+        {
+            rb.linearVelocity = Vector2.zero;
+            transform.position = teleportPosition;
+            gravityRotator.RotateGravity(0);
+            direction = 0;
+            directionUpdate();
+        }
+    }
+
+    private void FillJumpBar()
+    {
+        if (currentJumpResource < maxJumpResource)
+        {
+            currentJumpResource++;
+            jumpBar.setResource(currentJumpResource);
+        }
+    }
+
+    private void EnableDoubleJump()
+    {
+        if (!onGround)
+        {
+            canDoubleJump = true;
+        }
+    }
+    private void ResetDoubleJump()
+    {
+        doubleJumped = false;
+        canDoubleJump = true;
     }
 }
