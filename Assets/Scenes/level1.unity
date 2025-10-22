@@ -1359,7 +1359,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3332534841241974048, guid: 3d8bdde614cc30f4b93a5660ab2aedd6, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -30.00693
+      value: -31.03
       objectReference: {fileID: 0}
     - target: {fileID: 3332534841241974048, guid: 3d8bdde614cc30f4b93a5660ab2aedd6, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1469,14 +1469,14 @@ MonoBehaviour:
   rightAccel: 5
   onGround: 1
   doubleJumped: 0
-  acceleration: 20
-  maxSpeed: 8
+  acceleration: 30
+  maxSpeed: 10
   friction: 0.9
   mainCamera: {fileID: 1054279856}
   teleportPosition: {x: -7, y: 2}
   jumpBar: {fileID: 1754264608}
   maxJumpResource: 100
-  jumpRechargeRate: 25
+  jumpRechargeRate: 83.3
   uiManager: {fileID: 288481746}
   gravityController: {fileID: 976168122}
   gravityRotator: {fileID: 976168121}
@@ -1876,7 +1876,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 100}
+  m_AnchoredPosition: {x: 0, y: 120}
   m_SizeDelta: {x: 300, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &871128669
@@ -2154,7 +2154,7 @@ MonoBehaviour:
   rotationSpeed: 180
   rollInterval: 5
   minInterval: 1
-  rollTimer: 0
+  rollTimer: 5
 --- !u!114 &976168122
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2171,7 +2171,7 @@ MonoBehaviour:
   player: {fileID: 673300807}
   gravityDirection: {x: 0, y: -1}
   gravDirection: 0
-  gravityStrength: 9.81
+  gravityStrength: 25
 --- !u!4 &976168123
 Transform:
   m_ObjectHideFlags: 0
