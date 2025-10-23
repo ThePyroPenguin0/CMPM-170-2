@@ -20,13 +20,13 @@ public class PlayerController : MonoBehaviour
     [Header("Physics Settings")]
     public float acceleration = 10f;
     public float maxSpeed = 8f;
-    public float friction = 0.9f;
+    public float friction = 0.95f;
 
     [Header("Player Options")]
     public Camera mainCamera;
 
     [Header("Teleport Settings")]
-    public Vector2 teleportPosition = new Vector2(-10f, 4f);
+    public Vector2 teleportPosition = new Vector2(-57.8f, 15f);
 
     [Header("Jump Bar Settings")]
     public ResourceBar jumpBar;
@@ -153,6 +153,7 @@ public class PlayerController : MonoBehaviour
         {
             animator.transform.localScale = new Vector3(1, 1, 1); // Face right
         }
+
     }
 
     void LateUpdate()
@@ -201,13 +202,13 @@ public class PlayerController : MonoBehaviour
             {
                 jumpBar.setResource(0);
                 currentJumpResource = 0;
-                rb.AddForce(-gravityController.gravityDirection.normalized * 15, ForceMode2D.Impulse);
+                rb.AddForce(-gravityController.gravityDirection.normalized * 30, ForceMode2D.Impulse);
                 doubleJumped = true;
                 canDoubleJump = false;
                 Invoke("ResetDoubleJump", doubleJumpTimer);
             }
         }
-        if (Input.GetKey(downKey)) input.y -= downAccel;
+        input.y -= downAccel;
         if (Input.GetKey(leftKey)) input.x -= leftAccel;
         if (Input.GetKey(rightKey)) input.x += rightAccel;
         // Debug.Log($"Raw Input: {input}");
