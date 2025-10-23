@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    private Animator animator;
+
     [Header("Movement Settings")]
     public GameObject player;
     public int direction = 0;
@@ -18,13 +20,13 @@ public class PlayerController : MonoBehaviour
     [Header("Physics Settings")]
     public float acceleration = 10f;
     public float maxSpeed = 8f;
-    public float friction = 0.9f;
+    public float friction = 0.95f;
 
     [Header("Player Options")]
     public Camera mainCamera;
 
     [Header("Teleport Settings")]
-    public Vector2 teleportPosition = new Vector2(-10f, 4f);
+    public Vector2 teleportPosition = new Vector2(-57.8f, 15f);
 
     [Header("Jump Bar Settings")]
     public ResourceBar jumpBar;
@@ -117,6 +119,7 @@ public class PlayerController : MonoBehaviour
         currentJumpResource = maxJumpResource;
         jumpBar.setMaxResource(maxJumpResource);
         jumpBar.setResource(currentJumpResource);
+        animator = GetComponentInChildren<Animator>();
     }
 
     void FixedUpdate()
@@ -125,6 +128,32 @@ public class PlayerController : MonoBehaviour
         checkForDirectionChange();
         ApplyPhysicsMovement(movement);
         FillJumpBar();
+
+        // Animation parameters - adjusted for gravity direction
+        float speed = rb.linearVelocity.magnitude;
+        
+        // Calculate velocity relative to gravity direction
+        Vector2 gravityDir = gravityController.gravityDirection.normalized;
+        float velocityAlongGravity = Vector2.Dot(rb.linearVelocity, gravityDir);
+        
+        bool isWalking = speed > 0.1f && onGround;
+        bool isJumping = !onGround && velocityAlongGravity < -0.1f;
+        bool isFalling = !onGround && velocityAlongGravity > 0.1f;
+
+        animator.SetBool("isWalking", isWalking);
+        animator.SetBool("isJumping", isJumping);
+        animator.SetBool("isFalling", isFalling);
+
+        // Flip sprite based on input (before rotation mapping)
+        if (Input.GetKey(leftKey))
+        {
+            animator.transform.localScale = new Vector3(-1, 1, 1); // Face left
+        }
+        else if (Input.GetKey(rightKey))
+        {
+            animator.transform.localScale = new Vector3(1, 1, 1); // Face right
+        }
+
     }
 
     void LateUpdate()
@@ -173,13 +202,13 @@ public class PlayerController : MonoBehaviour
             {
                 jumpBar.setResource(0);
                 currentJumpResource = 0;
-                rb.AddForce(-gravityController.gravityDirection.normalized * 15, ForceMode2D.Impulse);
+                rb.AddForce(-gravityController.gravityDirection.normalized * 30, ForceMode2D.Impulse);
                 doubleJumped = true;
                 canDoubleJump = false;
                 Invoke("ResetDoubleJump", doubleJumpTimer);
             }
         }
-        if (Input.GetKey(downKey)) input.y -= downAccel;
+        input.y -= downAccel;
         if (Input.GetKey(leftKey)) input.x -= leftAccel;
         if (Input.GetKey(rightKey)) input.x += rightAccel;
         // Debug.Log($"Raw Input: {input}");
@@ -299,5 +328,13 @@ public class PlayerController : MonoBehaviour
     {
         doubleJumped = false;
         canDoubleJump = true;
+    }
+
+    void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Platform"))
+            {
+                onGround = false;
+            }
     }
 }

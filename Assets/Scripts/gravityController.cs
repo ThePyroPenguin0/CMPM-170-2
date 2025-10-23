@@ -10,18 +10,13 @@ public class GravityController : MonoBehaviour
 
     public Vector2 gravityDirection = Vector2.down;
     public int gravDirection = 0;
-    public float gravityStrength = 9.81f;
+    // public float gravityStrength = 9.81f;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
     }
 
-    // Update is called once per frame
-    void FixedUpdate()
-    {
-        body.AddForce(gravityDirection * gravityStrength);
-    }
     // pass in degrees you want rotated and gravity will shift accordingly
     public void RotateGravity()
     {
@@ -47,6 +42,7 @@ public class GravityController : MonoBehaviour
                 // Debug.LogError("Gravity direction out of bounds");
                 break;
         }
+        player.downAccel = Random.Range(player.downAccel - 1, player.downAccel + 1);
     }
 
     public void RotateObject(float degrees)

@@ -9,16 +9,16 @@ public class GravityRotator : MonoBehaviour
     public PlayerController player;
     public Transform cameraTransform;
 
-    public float rotationSpeed = 180f;
+    public float rotationSpeed = 225f;
 
     private bool isRotating = false;
     private Quaternion targetRotation;
     private Collider2D playerCollider;
 
     [Header("Die Roll Settings")]
-    [SerializeField] private float rollInterval = 5f;
-    [SerializeField] private float minInterval = 1f;
-    [SerializeField] private float rollTimer = 5f;
+    [SerializeField] private float rollInterval = 2.5f;
+    [SerializeField] private float minInterval = 0.5f;
+    [SerializeField] private float rollTimer = 2.5f;
 
     void Start()
     {
@@ -52,7 +52,7 @@ public class GravityRotator : MonoBehaviour
                     player.direction = rotationAmount % 360 / 90;
                     RotateGravity(rotationAmount);
 
-                    rollInterval = 5f;
+                    rollInterval = 2.5f;
                     rollTimer = rollInterval;
                     // Debug.Log($"Rolled a {roll}, time for a {rotationAmount} degree rotation! :)");
                 }
