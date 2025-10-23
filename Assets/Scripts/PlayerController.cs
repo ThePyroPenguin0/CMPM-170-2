@@ -129,29 +129,30 @@ public class PlayerController : MonoBehaviour
         ApplyPhysicsMovement(movement);
         FillJumpBar();
 
-        // Animation parameters 
+        // Animation parameters - adjusted for gravity direction
         float speed = rb.linearVelocity.magnitude;
-
-        if (rb.linearVelocity.x < -0.1f)
-        {
-            animator.transform.localScale = new Vector3(-1, 1, 1); // Face left
-        }
-        else if (rb.linearVelocity.x > 0.1f)
-        {
-            animator.transform.localScale = new Vector3(1, 1, 1); // Face right
-        }
         
         // Calculate velocity relative to gravity direction
         Vector2 gravityDir = gravityController.gravityDirection.normalized;
         float velocityAlongGravity = Vector2.Dot(rb.linearVelocity, gravityDir);
         
         bool isWalking = speed > 0.1f && onGround;
-        bool isJumping = !onGround && velocityAlongGravity < -0.1f; // Moving against gravity
-        bool isFalling = !onGround && velocityAlongGravity > 0.1f;  // Moving with gravity
+        bool isJumping = !onGround && velocityAlongGravity < -0.1f;
+        bool isFalling = !onGround && velocityAlongGravity > 0.1f;
 
         animator.SetBool("isWalking", isWalking);
         animator.SetBool("isJumping", isJumping);
         animator.SetBool("isFalling", isFalling);
+
+        // Flip sprite based on input (before rotation mapping)
+        if (Input.GetKey(leftKey))
+        {
+            animator.transform.localScale = new Vector3(-1, 1, 1); // Face left
+        }
+        else if (Input.GetKey(rightKey))
+        {
+            animator.transform.localScale = new Vector3(1, 1, 1); // Face right
+        }
     }
 
     void LateUpdate()
