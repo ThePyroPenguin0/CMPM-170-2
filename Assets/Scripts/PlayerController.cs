@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    private Animator animator;
+
     [Header("Movement Settings")]
     public GameObject player;
     public int direction = 0;
@@ -117,6 +119,7 @@ public class PlayerController : MonoBehaviour
         currentJumpResource = maxJumpResource;
         jumpBar.setMaxResource(maxJumpResource);
         jumpBar.setResource(currentJumpResource);
+        animator = GetComponentInChildren<Animator>();
     }
 
     void FixedUpdate()
@@ -125,6 +128,30 @@ public class PlayerController : MonoBehaviour
         checkForDirectionChange();
         ApplyPhysicsMovement(movement);
         FillJumpBar();
+
+        // Animation parameters 
+        float speed = rb.linearVelocity.magnitude;
+
+        if (rb.linearVelocity.x < -0.1f)
+        {
+            animator.transform.localScale = new Vector3(-1, 1, 1); // Face left
+        }
+        else if (rb.linearVelocity.x > 0.1f)
+        {
+            animator.transform.localScale = new Vector3(1, 1, 1); // Face right
+        }
+        
+        // Calculate velocity relative to gravity direction
+        Vector2 gravityDir = gravityController.gravityDirection.normalized;
+        float velocityAlongGravity = Vector2.Dot(rb.linearVelocity, gravityDir);
+        
+        bool isWalking = speed > 0.1f && onGround;
+        bool isJumping = !onGround && velocityAlongGravity < -0.1f; // Moving against gravity
+        bool isFalling = !onGround && velocityAlongGravity > 0.1f;  // Moving with gravity
+
+        animator.SetBool("isWalking", isWalking);
+        animator.SetBool("isJumping", isJumping);
+        animator.SetBool("isFalling", isFalling);
     }
 
     void LateUpdate()
@@ -299,5 +326,13 @@ public class PlayerController : MonoBehaviour
     {
         doubleJumped = false;
         canDoubleJump = true;
+    }
+
+    void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Platform"))
+            {
+                onGround = false;
+            }
     }
 }
