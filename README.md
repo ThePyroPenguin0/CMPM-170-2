@@ -11,9 +11,9 @@ Locking the controls to the player's original orientation means that changes in 
 This mechanic is to follow all changes in gravity and the player will be expected to keep up in real time. Is it hard? Probably. Is that our problem? Only if we're playing it.
 
 ## Credits
-Ayush Bandopadhyay - Artwork  
+Ayush Bandopadhyay - Animation  
 Joseph Coulson - Mechanical design  
-Luc Harnist - Level Design  
+Luc Harnist - Level design  
 Gabriel Lipow - Mechanical design
 
 ## Assets used:
