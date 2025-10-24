@@ -15,3 +15,9 @@ Ayush Bandopadhyay - Artwork
 Joseph Coulson - Mechanical design  
 Luc Harnist - Level Design  
 Gabriel Lipow - Mechanical design
+
+## Assets used:
+- "Irritating" song: "Microchip" by Oliver Buckland
+- "Serene" song: "Path to Lake Land" by Alexandr Zhelanov
+- Arrow keys sprite: https://www.kindpng.com/imgv/hRxibhJ_pixel-arrow-keys-png-transparent-png/
+- Drawn pixel art: Drawn on pixil.com
